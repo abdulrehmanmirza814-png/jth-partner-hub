@@ -25,24 +25,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure Pages
         uses: actions/configure-pages@v5
-      - name: Generate downloadable PDF editions
-        shell: bash
-        run: |
-          set -e
-          mkdir -p documents
-          rm -f documents/*.pdf
-          python3 -m http.server 8000 >/tmp/jth-http.log 2>&1 &
-          SERVER_PID=$!
-          sleep 2
-          CHROME=$(command -v google-chrome || command -v chromium || command -v chromium-browser)
-          "$CHROME" --headless --no-sandbox --disable-gpu --no-pdf-header-footer --print-to-pdf="documents/JTH_ATM_2026_Company_Profile.pdf" "http://127.0.0.1:8000/profile.html"
-          "$CHROME" --headless --no-sandbox --disable-gpu --no-pdf-header-footer --print-to-pdf="documents/JTH_Fleet_Portfolio_2026.pdf" "http://127.0.0.1:8000/fleet.html"
-          "$CHROME" --headless --no-sandbox --disable-gpu --no-pdf-header-footer --print-to-pdf="documents/JTH_ATM_2026_B2B_Rate_Sheet.pdf" "http://127.0.0.1:8000/rates.html"
-          kill "$SERVER_PID" || true
-          test -s documents/JTH_ATM_2026_Company_Profile.pdf
-          test -s documents/JTH_Fleet_Portfolio_2026.pdf
-          test -s documents/JTH_ATM_2026_B2B_Rate_Sheet.pdf
-      - name: Upload site
+      - name: Upload site with original visual PDFs
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
