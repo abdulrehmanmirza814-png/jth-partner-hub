@@ -1,0 +1,15 @@
+{
+  "mode": "draft",
+  "owner_name": "",
+  "timezone": "Asia/Dubai",
+  "llm": { "model": "claude-opus-5-5", "effort": "medium" },
+  "whatsapp": {
+    "skip_groups": true,
+    "allow_chats": [],
+    "deny_chats": ["family", "mom", "dad"],
+    "active_hours": null,
+    "max_auto_replies_per_hour": 30,
+    "max_auto_replies_per_day": 250,
+    "ai_disclosure": ""
+  }
+}

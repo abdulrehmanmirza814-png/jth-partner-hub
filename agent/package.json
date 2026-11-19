@@ -1,0 +1,22 @@
+{
+  "name": "jth-agent",
+  "version": "0.1.0",
+  "description": "JTH Tourism desktop assistant: answers WhatsApp Web chats in Abdul's tone and runs assigned browser tasks.",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "learn": "node src/cli.js learn",
+    "chat-test": "node src/cli.js chat-test",
+    "login": "node src/cli.js login",
+    "selftest": "node src/cli.js selftest",
+    "start": "node src/cli.js start",
+    "task": "node src/cli.js task",
+    "status": "node src/cli.js status",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.0",
+    "playwright-core": "^1.50.0"
+  }
+}

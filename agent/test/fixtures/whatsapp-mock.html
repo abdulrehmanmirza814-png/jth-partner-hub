@@ -1,0 +1,34 @@
+<!doctype html><html><body>
+<div id="pane-side"></div>
+<div id="main" hidden>
+  <header><span title="" id="h-title"></span><span title="" id="h-sub"></span></header>
+  <div id="msgs"></div>
+  <footer><div contenteditable="true" role="textbox" id="composer" style="min-height:20px;border:1px solid #999"></div></footer>
+</div>
+<script>
+  window.chats = []; let open = null, n = 1000;
+  const $ = (s) => document.querySelector(s);
+  function render() {
+    const side = $('#pane-side'); side.innerHTML = '';
+    window.chats.forEach((c) => {
+      const row = document.createElement('div'); row.setAttribute('role', 'listitem');
+      row.innerHTML = '<span title="' + c.title + '">' + c.title + '</span>' + (c.unread ? '<span aria-label="' + c.unread + ' unread messages">' + c.unread + '</span>' : '');
+      row.onclick = () => openChat(c); side.appendChild(row);
+    });
+  }
+  function paint(c) {
+    $('#h-title').setAttribute('title', c.title); $('#h-sub').setAttribute('title', c.group ? 'Ali, Sara, You' : 'online');
+    const box = $('#msgs'); box.innerHTML = '';
+    c.messages.forEach((m) => { const d = document.createElement('div'); d.setAttribute('data-id', (m.out ? 'true_' : 'false_') + m.id);
+      d.innerHTML = m.media ? '<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">' : '<div class="copyable-text"><span class="selectable-text">' + m.text + '</span></div>'; box.appendChild(d); });
+  }
+  function openChat(c) { if (open) open.draft = $('#composer').innerText; open = c; c.unread = 0; $('#main').hidden = false; paint(c); $('#composer').innerText = c.draft || ''; render(); }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && open) { open.draft = $('#composer').innerText; $('#main').hidden = true; open = null; }
+    if (e.key === 'Enter' && !e.shiftKey && e.target.id === 'composer') {
+      e.preventDefault(); const t = $('#composer').innerText.trim(); if (!t) return;
+      open.messages.push({ id: 'o' + (n++), out: true, text: t }); open.sent = (open.sent || []).concat(t); open.draft = ''; $('#composer').innerText = ''; paint(open);
+    }
+  });
+  window.setup = (chats) => { window.chats = chats; render(); };
+</script></body></html>

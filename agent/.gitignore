@@ -1,0 +1,6 @@
+node_modules/
+.env
+data/*
+!data/chats/
+data/chats/*
+!data/chats/.gitkeep

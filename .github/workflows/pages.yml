@@ -25,6 +25,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure Pages
         uses: actions/configure-pages@v5
+      - name: Keep private tooling out of the public site
+        run: rm -rf agent .github
       - name: Upload site with original visual PDFs
         uses: actions/upload-pages-artifact@v3
         with:
