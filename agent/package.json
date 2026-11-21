@@ -4,7 +4,9 @@
   "description": "JTH Tourism desktop assistant: answers WhatsApp Web chats in Abdul's tone and runs assigned browser tasks.",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "learn": "node src/cli.js learn",
     "chat-test": "node src/cli.js chat-test",
@@ -13,10 +15,29 @@
     "start": "node src/cli.js start",
     "task": "node src/cli.js task",
     "status": "node src/cli.js status",
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "desktop": "node src/cli.js desktop",
+    "do": "node src/cli.js do",
+    "desktop-selftest": "node src/cli.js desktop-selftest",
+    "gmail-auth": "node src/cli.js gmail-auth",
+    "mail": "node src/cli.js mail",
+    "briefing": "node src/cli.js briefing",
+    "social": "node src/cli.js social",
+    "review": "node src/cli.js review",
+    "queue": "node src/cli.js queue",
+    "research": "node src/cli.js research",
+    "ask": "node src/cli.js ask",
+    "delegate": "node src/cli.js delegate",
+    "test:real": "xvfb-run -a -s \"-screen 0 1280x800x24\" node --test --test-concurrency=1 test/driver-real.test.js test/desktop-e2e.test.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.0",
-    "playwright-core": "^1.50.0"
+    "playwright-core": "^1.50.0",
+    "screenshot-desktop": "^1.15.8",
+    "sharp": "^0.33.5"
+  },
+  "optionalDependencies": {
+    "@nut-tree-fork/nut-js": "^4.2.6",
+    "active-win": "^8.2.1"
   }
 }

@@ -29,6 +29,7 @@ export function parseTask(text, file = '') {
     max_publishes_per_day: num('max_publishes_per_day', 10),
     approval: meta.approval === 'auto' ? 'auto' : 'ask', // ask = you confirm each public post in the terminal
     vision: bool('vision', false),
+    mode: meta.mode === 'desktop' ? 'desktop' : 'browser', // desktop = the whole-computer assistant (mouse + keyboard)
   };
 }
 

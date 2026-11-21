@@ -148,3 +148,14 @@ test('task file parsing and scheduling', () => {
   assert.equal(isDue('manual', undefined, now), false);
   assert.ok(BLOCK_SIGNALS.test("You're temporarily blocked") && !BLOCK_SIGNALS.test('Desert safari photos'));
 });
+
+test('save_page writes the whole page text to data/delegated and records it', async () => {
+  const t = task({ name: 'savepage' });
+  let s = 0;
+  const llm = fakeLLM(() => (s++ === 0 ? { action: 'save_page', key_name: 'answer', memo: 'saving' } : { action: 'done', summary: 'ok', memo: 'x' }));
+  const r = await runTask(t, { llm, context, gap: [0, 0] });
+  assert.equal(r.status, 'finished');
+  const saved = loadTaskState('savepage').results.at(-1);
+  assert.equal(saved.key, 'answer');
+  assert.match(fs.readFileSync(saved.value, 'utf8'), /Dubai Tours page/);
+});

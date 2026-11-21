@@ -14,7 +14,7 @@ export const ACT_TOOL = {
   input_schema: {
     type: 'object',
     properties: {
-      action: { type: 'string', enum: ['goto', 'click', 'type', 'press', 'scroll', 'wait', 'submit_text', 'extract', 'check_done', 'ask_owner', 'done'] },
+      action: { type: 'string', enum: ['goto', 'click', 'type', 'press', 'scroll', 'wait', 'submit_text', 'extract', 'save_page', 'check_done', 'ask_owner', 'done'] },
       id: { type: 'integer', description: 'Element number from the observation (click, type, submit_text).' },
       url: { type: 'string', description: 'goto: full URL (must be on an allowed domain).' },
       text: { type: 'string', description: 'type: text to enter (search boxes, forms). submit_text: the public text to publish.' },
@@ -23,7 +23,7 @@ export const ACT_TOOL = {
       seconds: { type: 'number', description: 'wait: 1-10.' },
       dedupe_key: { type: 'string', description: 'submit_text/check_done: stable id of what you are acting on, e.g. the post URL. Never act twice on the same key.' },
       then_click_id: { type: 'integer', description: 'submit_text: optional element to click after typing (instead of pressing Enter).' },
-      key_name: { type: 'string', description: 'extract: name of the field.' },
+      key_name: { type: 'string', description: 'extract / save_page: name of the field or file.' },
       value: { type: 'string', description: 'extract: value to record.' },
       question: { type: 'string', description: 'ask_owner: what you need from Abdul.' },
       summary: { type: 'string', description: 'done: what was accomplished.' },
@@ -158,6 +158,16 @@ export async function runTask(task, { llm, context, approve, dry = false, gap = 
             saveTaskState(task.name, st);
             result(`step ${step}: recorded ${a.key_name}${memo}`);
             break;
+          case 'save_page': {
+            const text = await page.evaluate(() => document.body.innerText);
+            const dir = path.join(DATA, 'delegated');
+            const file = path.join(dir, `${task.name}-${String(a.key_name || 'page').replace(/[^\w-]/g, '_')}-${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)}.md`);
+            appendText(file, `# ${page.url()}\n\n${text}\n`);
+            st.results.push({ at: new Date().toISOString(), key: a.key_name, value: file, url: page.url() });
+            saveTaskState(task.name, st);
+            result(`step ${step}: saved page text (${text.length} chars) to ${file}${memo}`);
+            break;
+          }
           case 'check_done':
             result(`step ${step}: check_done "${a.dedupe_key}" -> ${st.done[a.dedupe_key] ? 'ALREADY DONE, skip it' : 'not done yet'}${memo}`);
             break;

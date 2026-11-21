@@ -8,7 +8,7 @@ export function createLLM(cfg) {
   const client = new Anthropic(); // reads ANTHROPIC_API_KEY from the environment
   const useFallbacks = cfg.fallbacks !== false && /opus-5|fable|sonnet-5-5/.test(cfg.model);
 
-  async function complete({ system, messages, tools, max_tokens }) {
+  async function complete({ system, messages, tools, max_tokens, toolChoice }) {
     const params = {
       model: cfg.model,
       max_tokens: max_tokens ?? cfg.max_tokens,
@@ -19,7 +19,8 @@ export function createLLM(cfg) {
     if (tools) {
       params.tools = tools;
       // Forced tool_choice is rejected by the newest models, so use auto and instruct in the prompt.
-      params.tool_choice = { type: 'auto', disable_parallel_tool_use: true };
+      // toolChoice === false omits it (used for server-side tools such as web search).
+      if (toolChoice !== false) params.tool_choice = toolChoice ?? { type: 'auto', disable_parallel_tool_use: true };
     }
     if (useFallbacks) {
       return client.beta.messages.create({ ...params, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' });

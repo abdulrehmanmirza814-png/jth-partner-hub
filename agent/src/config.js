@@ -10,6 +10,7 @@ export const DEFAULTS = {
   timezone: 'Asia/Dubai',
   llm: { model: 'claude-opus-5-5', effort: 'medium', fallbacks: true, max_tokens: 3000 },
   whatsapp: {
+    enabled: true,
     url: 'https://web.whatsapp.com',
     poll_seconds: [20, 40],
     reply_delay_seconds: [6, 18],
@@ -32,6 +33,36 @@ export const DEFAULTS = {
     ai_disclosure: '', // optional text added to the FIRST reply in a new chat, e.g. "(Assistant to Abdul)"
   },
   tasks: { default_gap_seconds: [60, 150] },
+  // The desktop assistant: sees the screen, moves the real mouse, types on the real keyboard.
+  desktop: {
+    enabled: true,
+    // watch      = you approve every set of actions before it runs (best for the first days)
+    // supervised = it asks before sending/posting/paying; you can step in any time (default)
+    // auto       = no per-action questions (only the deny-list, corner stop and your mouse takeover remain)
+    mode: 'supervised',
+    max_steps: 80,
+    max_minutes: 30,
+    max_actions_per_turn: 5,
+    settle_ms: 500,
+    pause_on_user_input: true, // you touch the mouse -> it pauses
+    takeover_px: 25,
+    max_edge: 1568,
+    max_megapixels: 1.15,
+    deny_windows: ['1password', 'bitwarden', 'lastpass', 'keepass', 'keychain access', 'password', 'wallet', 'banking', 'paypal', 'authenticator', 'windows security', 'credential'],
+    send_apps: ['whatsapp', 'gmail', 'mail', 'outlook', 'inbox', 'compose', 'facebook', 'instagram', 'messenger', 'telegram', 'linkedin', 'twitter', 'x.com', 'slack', 'discord', 'signal', 'teams', 'reddit', 'tiktok'],
+  },
+  panel: { port: 8787 },
+  email: {
+    mode: 'draft', // draft = replies are saved as Gmail drafts for you to send; auto = may send safe categories
+    query: 'is:unread in:inbox newer_than:2d -category:promotions -category:social -category:forums',
+    max_per_run: 15,
+    check_every_minutes: 30,
+    auto_send_categories: [],
+    deny_senders: [],
+  },
+  briefing: { at: '08:00' },
+  social: { platforms: ['facebook', 'instagram'], plan: null }, // plan example: {"at":"09:00","topic":"this week's offers","count":1}
+  research: { sites: [] },
 };
 
 export function loadConfig() {
